@@ -14,7 +14,7 @@ module.exports = merge(baseConfig, {
   devServer: {
     hot: true,
     compress: true,
-    port: 8080,
+    port: 6789,
     contentBase: path.join(__dirname, '../src/renderer'),
     after() {
       spawn('npm', ['run', 'start-main'], {
