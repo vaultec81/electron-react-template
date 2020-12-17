@@ -7,15 +7,28 @@ const entryUrl = process.env.NODE_ENV === 'development'
 
 let window = null;
 
-app.on('ready', () => {
-  window = new BrowserWindow({width: 800, height: 600,
-    webPreferences: {
-      nodeIntegration: true,
-    }  
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (window) {
+      if (window.isMinimized()) window.restore()
+      window.focus()
+    }
+  })
+
+  app.on('ready', () => {
+    window = new BrowserWindow({width: 800, height: 600,
+      webPreferences: {
+        nodeIntegration: true
+      }  
+    });
+    window.loadURL(entryUrl);
+    window.on('closed', () => window = null);
   });
-  window.loadURL(entryUrl);
-  window.on('closed', () => window = null);
-});
+}
 
 app.on('window-all-closed', () => {
   if(process.platform !== 'darwin') {
